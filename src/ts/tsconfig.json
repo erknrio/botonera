@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "target": "es6",
+        "target": "es5",
         "module": "commonjs",
         "moduleResolution": "node",
         "isolatedModules": false,
@@ -22,7 +22,9 @@
         "typings/browser.d.ts"
     ],
     "include": [
-        "botonera.ts"
+        "./botonera/*.ts",
+        "./classes/*.ts",
+        "./libs/*.ts"
     ],
     "compileOnSave": true,
     "buildOnSave": false,

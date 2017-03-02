@@ -1,0 +1,26 @@
+{
+  "name": "botonera",
+  "version": "0.0.1",
+  "description": "HTML buttons to insert a code inside an input text and submit it to server",
+  "main": "dist/js/botonera.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/erknrio/botonera.git"
+  },
+  "author": "Adrian Garrido Garcia",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/erknrio/botonera/issues"
+  },
+  "homepage": "https://github.com/erknrio/botonera#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-browserify": "^0.5.1",
+    "gulp-uglify": "^2.0.1",
+    "gulp-clean-css": "^3.0.3",
+    "gulp-rename": "^1.2.2"
+  }
+}
