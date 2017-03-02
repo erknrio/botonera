@@ -1,4 +1,4 @@
-import { NumberCodes } from "../classes/NumberCodes.class";
+import { KeyboardCodes } from "../classes/KeyboardCodes.class";
 (function () {
     'use strict';
 
@@ -6,15 +6,17 @@ import { NumberCodes } from "../classes/NumberCodes.class";
         var elements: any,
         element: any;
         // Init NumberCode class
-        var numberCodes = new NumberCodes();
+        var keyboardCodes = new KeyboardCodes();
         // Events
-        document.addEventListener("keyup", numberCodes.getNunmberCode);
+        // We use .bind() because KeyboardCodes class this
+        // doesn't have the right scope. It reference to
+        // input text instead of class itselft.
+        document.addEventListener("keyup", keyboardCodes.checkKeyboardCode.bind(keyboardCodes));
 
         elements = document.querySelectorAll(".btn-number-code");
-
         for (element of elements) {
-            element.addEventListener("click", numberCodes.getNunmberCode);
-            element.addEventListener("touchend", numberCodes.getNunmberCode);
+            element.addEventListener("click", keyboardCodes.checkKeyboardCode.bind(keyboardCodes));
+            element.addEventListener("touchend", keyboardCodes.checkKeyboardCode.bind(keyboardCodes));
         }
     }
     document.addEventListener("DOMContentLoaded", function (event) {
