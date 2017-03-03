@@ -3,7 +3,7 @@ var utils_1 = require("../libs/utils");
 var KeyboardCodes = (function () {
     function KeyboardCodes(receivedParams) {
         this._keyPressed = -1;
-        this._maxNumCodes = 8;
+        this.maxNumCodes = 8;
         var param;
         if (typeof receivedParams != "undefined") {
             for (param in receivedParams) {
@@ -31,15 +31,6 @@ var KeyboardCodes = (function () {
             }
         }
     };
-    Object.defineProperty(KeyboardCodes.prototype, "maxNumCodes", {
-        set: function (newKey) {
-            if (utils_1.Utils.is_empty(newKey)) {
-                this._maxNumCodes = Math.floor(newKey);
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
     KeyboardCodes.prototype.getKeyboardCode = function (event) {
         var attr = '';
         try {
@@ -69,8 +60,14 @@ var KeyboardCodes = (function () {
             }
             else {
                 currentCode = htmlElement.value;
-                currentCode += this._keyPressed.toString();
-                htmlElement.value = currentCode;
+                if (currentCode.length <= this.maxNumCodes) {
+                    currentCode += this._keyPressed.toString();
+                    htmlElement.value = currentCode;
+                }
+                else {
+                    window.alert("No puede introducir m\u00E1s n\u00FAmeros");
+                    throw "Max code length reached";
+                }
             }
         }
         catch (err) {
@@ -78,9 +75,7 @@ var KeyboardCodes = (function () {
         }
     };
     KeyboardCodes.prototype.checkKeyboardCode = function (ev) {
-        var keyboardCode;
-        var keyboardCodeToNumber = {
-            "48": 0,
+        var keyboardCode = this.getKeyboardCode(ev), keyboardCodeToNumber = {
             "49": 1,
             "50": 2,
             "51": 3,
@@ -90,8 +85,16 @@ var KeyboardCodes = (function () {
             "55": 7,
             "56": 8,
             "57": 9,
+            "97": 1,
+            "98": 2,
+            "99": 3,
+            "100": 4,
+            "101": 5,
+            "102": 6,
+            "103": 7,
+            "104": 8,
+            "105": 9,
         }, number = -1;
-        keyboardCode = this.getKeyboardCode(ev);
         try {
             if (utils_1.Utils.is_empty(keyboardCode)) {
                 throw "Keyboard code not found";
@@ -99,9 +102,6 @@ var KeyboardCodes = (function () {
             else {
                 if (keyboardCodeToNumber.hasOwnProperty(keyboardCode)) {
                     number = parseInt(keyboardCodeToNumber[keyboardCode], 10);
-                }
-                else {
-                    number = parseInt(keyboardCode, 10);
                 }
                 this._keyPressed = number;
                 this.insertHtmlNumberCode();

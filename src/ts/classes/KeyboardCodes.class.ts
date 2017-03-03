@@ -2,7 +2,7 @@ import { Utils } from "../libs/utils";
 
 export class KeyboardCodes {
     private _keyPressed: number = -1;
-    private _maxNumCodes: number = 8;
+    public maxNumCodes: number = 8;
     constructor(receivedParams?: Object) {
         var param: any;
         if (typeof receivedParams != "undefined") {
@@ -34,12 +34,6 @@ export class KeyboardCodes {
         }
     }
 
-    set maxNumCodes(newKey: number) {
-        if (Utils.is_empty(newKey)) {
-            this._maxNumCodes = Math.floor(newKey);
-        }
-    }
-
     public getKeyboardCode(event: any): string {
         var attr: string = '';
         try {
@@ -67,8 +61,13 @@ export class KeyboardCodes {
                 throw "Code not found";
             } else {
                 currentCode = htmlElement.value;
-                currentCode += this._keyPressed.toString();
-                htmlElement.value = currentCode;
+                if (currentCode.length <= this.maxNumCodes) {
+                    currentCode += this._keyPressed.toString();
+                    htmlElement.value = currentCode;
+                } else {
+                    window.alert("No puede introducir m\u00E1s n\u00FAmeros");
+                    throw "Max code length reached";
+                }
             }
         } catch(err) {
             window.console.error("Error inserting code: " + err.message);
@@ -76,9 +75,8 @@ export class KeyboardCodes {
     }
 
     public checkKeyboardCode(ev): void {
-        var keyboardCode: any;
-        var keyboardCodeToNumber = {
-            "48": 0,
+        var keyboardCode: any = this.getKeyboardCode(ev),
+        keyboardCodeToNumber = {
             "49": 1,
             "50": 2,
             "51": 3,
@@ -88,11 +86,17 @@ export class KeyboardCodes {
             "55": 7,
             "56": 8,
             "57": 9,
+            "97": 1,// numpads
+            "98": 2,
+            "99": 3,
+            "100": 4,
+            "101": 5,
+            "102": 6,
+            "103": 7,
+            "104": 8,
+            "105": 9,
         },
         number: number = -1;
-
-        // keyboardCode = () => { this.getKeyboardCode(ev) };
-        keyboardCode = this.getKeyboardCode(ev)
 
         try {
             if (Utils.is_empty(keyboardCode)) {
@@ -100,8 +104,6 @@ export class KeyboardCodes {
             } else {
                 if (keyboardCodeToNumber.hasOwnProperty(keyboardCode)) {
                     number = parseInt(keyboardCodeToNumber[keyboardCode], 10);
-                } else {
-                    number = parseInt(keyboardCode, 10);
                 }
 
                 this._keyPressed = number;
