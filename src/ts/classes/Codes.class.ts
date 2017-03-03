@@ -1,8 +1,9 @@
 import { Utils } from "../libs/utils";
 
-export class KeyboardCodes {
+export class Codes {
+    public maxNumCodes: number = 0;// 0 == unlimited
     private _keyPressed: number = -1;
-    public maxNumCodes: number = 8;
+    private _apiURL: string = 'http://google.es/';
     constructor(receivedParams?: Object) {
         var param: any;
         if (typeof receivedParams != "undefined") {
@@ -34,7 +35,7 @@ export class KeyboardCodes {
         }
     }
 
-    public getKeyboardCode(event: any): string {
+    private getKeyboardCode(event: any): string {
         var attr: string = '';
         try {
             if (Utils.is_empty(event.currentTarget.getAttribute)) {
@@ -53,7 +54,7 @@ export class KeyboardCodes {
         }
     }
 
-    public insertHtmlNumberCode() {
+    private insertHtmlNumberCode() {
         var htmlElement = <HTMLInputElement>document.getElementById("checkin-code"),
         currentCode: string = '';
         try {
@@ -61,7 +62,7 @@ export class KeyboardCodes {
                 throw "Code not found";
             } else {
                 currentCode = htmlElement.value;
-                if (currentCode.length <= this.maxNumCodes) {
+                if (this.maxNumCodes == 0 || currentCode.length <= this.maxNumCodes) {
                     currentCode += this._keyPressed.toString();
                     htmlElement.value = currentCode;
                 } else {
@@ -74,7 +75,8 @@ export class KeyboardCodes {
         }
     }
 
-    public checkKeyboardCode(ev): void {
+    public checkKeyboardCode(ev?: any): void {
+        ev.stopImmediatePropagation();
         var keyboardCode: any = this.getKeyboardCode(ev),
         keyboardCodeToNumber = {
             "49": 1,
@@ -113,5 +115,27 @@ export class KeyboardCodes {
             window.console.error("Check keyboard error: " + err.message);
             this._keyPressed = -1;
         }
+    }
+    /////////////////
+    /// REST API ///
+    ////////////////
+    public post(data: string) {
+        var params: any = {},
+        callbacks: any = {};
+
+        params = {
+            "url": this._apiURL,
+            "data": 'userid=' + data
+        };
+
+        callbacks = {
+            "done": function() {
+                window.alert("Enviado");
+            },
+            "fail": function(response: any) {
+                window.alert("Fallo al enviar");
+            }
+        }
+        Utils.httpPost(params, callbacks);
     }
 }

@@ -1,9 +1,10 @@
 "use strict";
 var utils_1 = require("../libs/utils");
-var KeyboardCodes = (function () {
-    function KeyboardCodes(receivedParams) {
+var Codes = (function () {
+    function Codes(receivedParams) {
+        this.maxNumCodes = 0;
         this._keyPressed = -1;
-        this.maxNumCodes = 8;
+        this._apiURL = 'http://google.es/';
         var param;
         if (typeof receivedParams != "undefined") {
             for (param in receivedParams) {
@@ -16,12 +17,12 @@ var KeyboardCodes = (function () {
             }
         }
     }
-    KeyboardCodes.prototype.getProperty = function (property) {
+    Codes.prototype.getProperty = function (property) {
         if (this.hasOwnProperty(property)) {
             return this[property];
         }
     };
-    KeyboardCodes.prototype.setProperty = function (property, newKey) {
+    Codes.prototype.setProperty = function (property, newKey) {
         if (!utils_1.Utils.is_empty(property) && !utils_1.Utils.is_empty(newKey)) {
             switch (property) {
                 case 'keyPressed':
@@ -31,7 +32,7 @@ var KeyboardCodes = (function () {
             }
         }
     };
-    KeyboardCodes.prototype.getKeyboardCode = function (event) {
+    Codes.prototype.getKeyboardCode = function (event) {
         var attr = '';
         try {
             if (utils_1.Utils.is_empty(event.currentTarget.getAttribute)) {
@@ -52,7 +53,7 @@ var KeyboardCodes = (function () {
             return '';
         }
     };
-    KeyboardCodes.prototype.insertHtmlNumberCode = function () {
+    Codes.prototype.insertHtmlNumberCode = function () {
         var htmlElement = document.getElementById("checkin-code"), currentCode = '';
         try {
             if (this._keyPressed == -1) {
@@ -60,7 +61,7 @@ var KeyboardCodes = (function () {
             }
             else {
                 currentCode = htmlElement.value;
-                if (currentCode.length <= this.maxNumCodes) {
+                if (this.maxNumCodes == 0 || currentCode.length <= this.maxNumCodes) {
                     currentCode += this._keyPressed.toString();
                     htmlElement.value = currentCode;
                 }
@@ -74,7 +75,8 @@ var KeyboardCodes = (function () {
             window.console.error("Error inserting code: " + err.message);
         }
     };
-    KeyboardCodes.prototype.checkKeyboardCode = function (ev) {
+    Codes.prototype.checkKeyboardCode = function (ev) {
+        ev.stopImmediatePropagation();
         var keyboardCode = this.getKeyboardCode(ev), keyboardCodeToNumber = {
             "49": 1,
             "50": 2,
@@ -112,6 +114,22 @@ var KeyboardCodes = (function () {
             this._keyPressed = -1;
         }
     };
-    return KeyboardCodes;
+    Codes.prototype.post = function (data) {
+        var params = {}, callbacks = {};
+        params = {
+            "url": this._apiURL,
+            "data": 'userid=' + data
+        };
+        callbacks = {
+            "done": function () {
+                window.alert("Enviado");
+            },
+            "fail": function (response) {
+                window.alert("Fallo al enviar");
+            }
+        };
+        utils_1.Utils.httpPost(params, callbacks);
+    };
+    return Codes;
 }());
-exports.KeyboardCodes = KeyboardCodes;
+exports.Codes = Codes;

@@ -1,3 +1,7 @@
+interface customAny {
+    anything: any;
+}
+
 export var Utils = {
     "is_empty": function(data) {
         var count = 0, i;
@@ -25,5 +29,38 @@ export var Utils = {
         }
 
         return count === 0;
+    },
+    "httpPost": function(params = {
+        "url": "",
+        "data": {},
+        }, callbacks = {
+            "done": function(response: any) {},
+            "fail": function() {}
+        }) {
+            var xmlHttp: any = new XMLHttpRequest();
+
+            try {
+                xmlHttp.open("POST", params.url, true);
+
+                //Send the proper header information along with the request
+                xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+                xmlHttp.onreadystatechange = function() {//Call a function when the state changes.
+                    if(xmlHttp.readyState == 4) {
+                        switch(xmlHttp.status) {
+                            case 200:
+                                callbacks.done(xmlHttp.responseText);
+                            break;
+                            default:
+                                callbacks.fail();
+                        }
+                    } else {
+                        callbacks.fail();
+                    }
+                }
+                xmlHttp.send(params.data);
+            } catch(err) {
+                window.console.error("Http post error: " + err.message);
+            }
     }
 }
