@@ -1,2 +1,6 @@
 # Folder
 node_modules/
+build/
+src/
+package.json
+gulpfile.js
